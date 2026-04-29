@@ -3,6 +3,7 @@ package Base;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.List;
 
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
@@ -18,7 +19,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Base {
     
-    public static AndroidDriver driver;
+    public static AndroidDriver<WebElement> driver;
     static WebDriverWait wait;
     
     public static void main(String[] args) throws MalformedURLException {
@@ -55,58 +56,140 @@ try {
     System.out.println("✅ Appium Session Started Successfully!");
     
     // (Explicit Wait)
-     WebDriverWait wait = new WebDriverWait(driver, 20);
-     driver.findElement(By.xpath("//android.view.View[@content-desc=\"Skip\"]")).click();
-	 driver.findElement(By.xpath("//android.view.View[@content-desc=\"SIGN IN\"]")).click();
-    
-    
-    String emailXPath = "//android.view.View[@content-desc='ABC@EMAIL.COM']/android.widget.EditText";
-    
-    System.out.println("Search Email");
+    WebDriverWait wait = new WebDriverWait(driver, 20);
+   // wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+   
+    String emailXPath = "//android.widget.FrameLayout[@resource-id=\"android:id/content\"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View/android.view.View/android.widget.EditText[1]";
     WebElement emailField = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(emailXPath)));
-    
+   
     // Email input
     emailField.click();
-    emailField.sendKeys("ekramulsqaengineer@gmail.com");
+    emailField.sendKeys("superAdmin@gmail.com");
     System.out.println("Email Input Successfully");
     
     // Password Input
-    String passwordXPath = "//android.view.View[@content-desc='ENTER YOUR PASSWORD']/android.widget.EditText";
-    System.out.println("Search Password Field");
-    WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(passwordXPath)));
+    By passwordLocator = By.xpath("//android.widget.EditText[@password='true']");
+    WebElement passwordField = wait.until(ExpectedConditions.presenceOfElementLocated(passwordLocator));
+
     passwordField.click();
-    passwordField.sendKeys("Password123@");
+    passwordField.sendKeys("password");
+
     System.out.println("Password Set Successfully");
     
-    // scroll and search login button
-    System.out.println("Scroll Dwon and Search Login Button");
+    Thread.sleep(2000);
+    System.out.println("Scroll Down to Login Button");
+    // Scroll using UiScrollable (BEST WAY)
+    driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true))" +".scrollIntoView(new UiSelector().description(\"Login\"));");
+  
+    Thread.sleep(2000);
+    By loginBtn = By.xpath("//android.widget.Button[@content-desc='Login']");
+	WebElement login = wait.until(ExpectedConditions.visibilityOfElementLocated(loginBtn));
+	login.click();
+    System.out.println("Login Button Clicked Successfully");
     
-    driver.findElementByAndroidUIAutomator(
-        "new UiScrollable(new UiSelector().scrollable(true))" +
-        ".scrollIntoView(new UiSelector().description(\"LOG IN\"))"
-    ).click();
+    Thread.sleep(2000);
+    By nextBtn= By.xpath("//android.widget.Button[@content-desc=\"Continue\"]");
+    WebElement next = wait.until(ExpectedConditions.visibilityOfElementLocated(nextBtn));
+	next.click();
+	System.out.println("Continue Button Clicked Successfully");
+	 
+	Thread.sleep(2000);
+	By fullName = By.xpath("//android.widget.EditText");
+	WebElement name = wait.until(ExpectedConditions.visibilityOfElementLocated(fullName));
+	name.click();
+	name.sendKeys("Ekramul");
+	System.out.println("Full Name Input Successfully");
+	
+	
+	Thread.sleep(2000);
+	By email = By.xpath("//android.widget.ScrollView/android.widget.EditText[2]");
+	WebElement mail = wait.until(ExpectedConditions.visibilityOfElementLocated(email));
+	mail.click();
+	mail.sendKeys("ekramulcsediu2016@gmail.com");
+	System.out.println("Email Input Successfully");
+	
+	
+	Thread.sleep(2000);
+	By Phone = By.xpath("//android.widget.ScrollView/android.widget.EditText[3]");
+	WebElement phone = wait.until(ExpectedConditions.visibilityOfElementLocated(Phone));
+	phone.click();
+	phone.sendKeys("01758871165");
+	System.out.println("Phone Input Successfully");;
+	
+	
+	// Referral Source button click
+	By referals = By.xpath("//android.widget.Button[@content-desc='Referral Source']");
+	WebElement referal = wait.until(ExpectedConditions.visibilityOfElementLocated(referals));
+	referal.click();
 
-    System.out.println("Log In Button click successfully");
-    
-    
-  //wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//android.view.View[@content-desc=\\\"ENTER YOUR PASSWORD\\\"]/android.widget.EditText"))).sendKeys("Password123@");
-  //driver.findElement(By.xpath("//android.view.View[@content-desc=\"LOG IN\"]")).click();
-    
-    
+	System.out.println("Dropdown Opened");
+
+	// Facebook option select
+	Thread.sleep(2000);
+	By facebookOption = By.xpath("//android.widget.Button[@content-desc=\"Facebook\"]");
+	//By facebookOption = By.xpath("//*[contains(@text,'Facebook')]");
+	WebElement facebook = wait.until(ExpectedConditions.visibilityOfElementLocated(facebookOption));
+	facebook.click();
+	System.out.println("Facebook Selected Successfully");
+	
+	
+
+	Thread.sleep(2000);
+	driver.findElementByAndroidUIAutomator(
+	"new UiScrollable(new UiSelector().scrollable(true))" +".scrollIntoView(new UiSelector().descriptionContains(\"Current\"))");
+
+	Thread.sleep(2000);
+	List<WebElement> inputs = driver.findElements(By.className("android.widget.EditText"));
+	WebElement current = null;
+	for (WebElement el : inputs) {
+	    if (el.isDisplayed() && el.isEnabled()) {
+	        current = el;   // last visible enabled input
+	    }
+	}
+
+	if (current != null) {
+	    current.click();
+	    current.clear();
+	    current.sendKeys("Good");
+	    System.out.println("Current Va Rating Input Successfully");
+	} else {
+	    System.out.println("❌ Current Va Rating field not found");
+	}
+	
+	driver.findElementByAndroidUIAutomator(
+		    "new UiScrollable(new UiSelector().scrollable(true))" +".scrollIntoView(new UiSelector().descriptionContains(\"Prior\"))");
+	
+	
+	Thread.sleep(2000);
+
+	List<WebElement> toggles = driver.findElements(By.className("android.widget.Switch"));
+
+	for (WebElement tg : toggles) {
+	    if (tg.isDisplayed() && tg.isEnabled()) {
+	        tg.click();
+	        System.out.println("Prior Denial History Clicked Successfully");
+	        break;
+	    }
+	}
+	 Thread.sleep(2000);
+	    By Continue= By.xpath("//android.widget.Button[@content-desc=\"Continue\"]");
+	    WebElement conti = wait.until(ExpectedConditions.visibilityOfElementLocated(Continue));
+	    conti.click();
+		System.out.println("Continue Button Clicked Successfully");
+	
+
+	
+	
+       
     if (driver != null) {
         System.out.println("VALR Application Open Successfully");
     }
     
 } catch (Exception e) {
-    System.out.println(" sessor error: " + e.getMessage());
+    System.out.println(" session error: " + e.getMessage());
     return; 
 }
    
-	//  driver.findElement(By.xpath("//android.view.View[@content-desc=\"Skip\"]")).click();
-	 // driver.findElement(By.xpath("//android.view.View[@content-desc=\"SIGN IN\"]")).click();
-	 // driver.findElement(By.xpath("/android.view.View[@content-desc=\\\\\\\"ABC@EMAIL.COM\\\\\\\"]/android.widget.EditText")).sendKeys("ekramulsqaengineer@gmail.com");
-	  //wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/android.view.View[@content-desc=\\\"ABC@EMAIL.COM\\\"]/android.widget.EditText"))).sendKeys("ekramulsqaengineer@gmail.com");
-     // wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//android.view.View[@content-desc=\\\"ENTER YOUR PASSWORD\\\"]/android.widget.EditText"))).sendKeys("Password123@");
-      //driver.findElement(By.xpath("//android.view.View[@content-desc=\"LOG IN\"]")).click();
+	
  }
 }
