@@ -158,7 +158,7 @@ try {
 	
 	driver.findElementByAndroidUIAutomator(
 		    "new UiScrollable(new UiSelector().scrollable(true))" +".scrollIntoView(new UiSelector().descriptionContains(\"Prior\"))");
-	
+	//System.out.println("❌ Current Va Rating field not found");
 	
 	Thread.sleep(2000);
 
@@ -177,9 +177,7 @@ try {
 	    conti.click();
 		System.out.println("Continue Button Clicked Successfully");
 	
-
-	
-	
+		
        
     if (driver != null) {
         System.out.println("VALR Application Open Successfully");
