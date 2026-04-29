@@ -1,0 +1,48 @@
+name: Appium Android Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  android-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v3
+
+    - name: ☕ Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: 📦 Install Node.js (for Appium)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: 📱 Install Appium
+      run: |
+        npm install -g appium
+        appium -v
+
+    - name: 📱 Install Android Emulator
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 30
+        target: default
+        arch: x86_64
+        profile: Nexus 6
+        script: echo "Emulator Started"
+
+    - name: 🚀 Start Appium Server
+      run: |
+        appium &
+        sleep 10
+
+    - name: 🧪 Run Tests
+      run: mvn clean test
